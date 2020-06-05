@@ -1,4 +1,4 @@
-from .algorithm_utils import PyTorchUtils
+from src.utils.algorithm_utils import PyTorchUtils
 import numpy as np
 import torch.nn as nn
 from skorch import NeuralNetRegressor
@@ -83,9 +83,10 @@ class AutoEncoderModule(nn.Module, PyTorchUtils):
         self._decoder = nn.Sequential(*layers)
         self.to_device(self._decoder)
 
-    def forward(self, ts_batch):
+    def forward(self, ts_batch, return_latent=False):
         flattened_sequence = ts_batch.view(ts_batch.size(0), -1)
         enc = self._encoder(flattened_sequence.float())
         dec = self._decoder(enc)
-        return dec, enc
+        reconstructed_sequence = dec.view(ts_batch.size())
+        return (reconstructed_sequence, enc) if return_latent else reconstructed_sequence
 
