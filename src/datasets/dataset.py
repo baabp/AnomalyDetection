@@ -30,4 +30,7 @@ class Dataset:
         return self._data
 
     def save(self):
+        dir_dest = os.path.dirname(self.processed_path)
+        if not os.path.exists(dir_dest):
+            os.makedirs(dir_dest)
         pickle.dump(self._data, open(self.processed_path, 'wb'))

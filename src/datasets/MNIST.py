@@ -1,14 +1,14 @@
 import pandas as pd
 import tensorflow as tf
 
-from .dataset import Dataset
+from src.datasets.dataset import Dataset
 
 
 class MNIST(Dataset):
     """0 is the outlier class. The training set is free of outliers."""
 
     def __init__(self, seed):
-        super().__init__(name="MNIST", file_name='')  # We do not need to load data from a file
+        super().__init__(name="MNIST", file_name='MNIST.pkl')  # We do not need to load data from a file
         self.seed = seed
 
     def load(self):
@@ -22,3 +22,11 @@ class MNIST(Dataset):
         x_train, x_test = x_train / 255, x_test / 255
         x_train, x_test = x_train.reshape(-1, 784), x_test.reshape(-1, 784)
         self._data = tuple(pd.DataFrame(data=data) for data in [x_train, y_train, x_test, y_test])
+
+def main():
+    mn_class = MNIST(seed=1)
+    mn_class.load()
+    mn_class.save()
+
+if __name__ == '__main__':
+    main()
