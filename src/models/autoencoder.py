@@ -112,31 +112,31 @@ class AE(nn.Module):
         reconstructed = relu(activation)
         return reconstructed
 
-#
-# class AutoEncoderModule(nn.Module, PyTorchUtils):
-#     def __init__(self, n_features: int, sequence_length: int, hidden_size: int, seed: int, gpu: int):
-#         # Each point is a flattened window and thus has as many features as sequence_length * features
-#         super().__init__()
-#         PyTorchUtils.__init__(self, seed, gpu)
-#         input_length = n_features * sequence_length
-#
-#         # creates powers of two between eight and the next smaller power from the input_length
-#         dec_steps = 2 ** np.arange(max(np.ceil(np.log2(hidden_size)), 2), np.log2(input_length))[1:]
-#         dec_setup = np.concatenate([[hidden_size], dec_steps.repeat(2), [input_length]])
-#         enc_setup = dec_setup[::-1]
-#
-#         layers = np.array([[nn.Linear(int(a), int(b)), nn.Tanh()] for a, b in enc_setup.reshape(-1, 2)]).flatten()[:-1]
-#         self._encoder = nn.Sequential(*layers)
-#         self.to_device(self._encoder)
-#
-#         layers = np.array([[nn.Linear(int(a), int(b)), nn.Tanh()] for a, b in dec_setup.reshape(-1, 2)]).flatten()[:-1]
-#         self._decoder = nn.Sequential(*layers)
-#         self.to_device(self._decoder)
-#
-#     def forward(self, ts_batch, return_latent=False):
-#         flattened_sequence = ts_batch.view(ts_batch.size(0), -1)
-#         enc = self._encoder(flattened_sequence.float())
-#         dec = self._decoder(enc)
-#         reconstructed_sequence = dec.view(ts_batch.size())
-#         return (reconstructed_sequence, enc) if return_latent else reconstructed_sequence
-#
+
+class AutoEncoderModule(nn.Module, PyTorchUtils):
+    def __init__(self, n_features: int, sequence_length: int, hidden_size: int, seed: int, gpu: int):
+        # Each point is a flattened window and thus has as many features as sequence_length * features
+        super().__init__()
+        PyTorchUtils.__init__(self, seed, gpu)
+        input_length = n_features * sequence_length
+
+        # creates powers of two between eight and the next smaller power from the input_length
+        dec_steps = 2 ** np.arange(max(np.ceil(np.log2(hidden_size)), 2), np.log2(input_length))[1:]
+        dec_setup = np.concatenate([[hidden_size], dec_steps.repeat(2), [input_length]])
+        enc_setup = dec_setup[::-1]
+
+        layers = np.array([[nn.Linear(int(a), int(b)), nn.Tanh()] for a, b in enc_setup.reshape(-1, 2)]).flatten()[:-1]
+        self._encoder = nn.Sequential(*layers)
+        self.to_device(self._encoder)
+
+        layers = np.array([[nn.Linear(int(a), int(b)), nn.Tanh()] for a, b in dec_setup.reshape(-1, 2)]).flatten()[:-1]
+        self._decoder = nn.Sequential(*layers)
+        self.to_device(self._decoder)
+
+    def forward(self, ts_batch, return_latent=False):
+        flattened_sequence = ts_batch.view(ts_batch.size(0), -1)
+        enc = self._encoder(flattened_sequence.float())
+        dec = self._decoder(enc)
+        reconstructed_sequence = dec.view(ts_batch.size())
+        return (reconstructed_sequence, enc) if return_latent else reconstructed_sequence
+
