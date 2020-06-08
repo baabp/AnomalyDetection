@@ -63,6 +63,27 @@ class AutoEncoder(nn.Module):
         reconstructed_sequence = decoded.view(X.size())
         return reconstructed_sequence
 
+class AutoEncoder_sk(nn.Module):
+    def __init__(self, n_features=5, hidden_size=10, seed=None, gpu=None):
+        super().__init__()
+        self.n_features = n_features
+        self.hidden_size = hidden_size
+        self.seed = seed
+        self.gpu = gpu
+
+        self.encoder = Encoder(n_features=self.n_features, hidden_size=self.hidden_size, seed=self.seed,
+                               gpu=self.gpu)
+        self.decoder = Decoder(n_features=self.n_features, hidden_size=self.hidden_size, seed=self.seed,
+                               gpu=self.gpu)
+
+    def forward(self, X):
+        encoded = self.encoder(X)
+        decoded = self.decoder(encoded)
+        # return decoded, encoded
+        reconstructed_sequence = decoded.view(X.size())
+        return reconstructed_sequence, encoded
+
+
 
 class AE(nn.Module):
     def __init__(self, **kwargs):
