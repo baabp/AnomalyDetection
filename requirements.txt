@@ -29,6 +29,7 @@ skorch
 optuna
 ax-platform
 botorch
+zope.dottedname
 
 # Data Generator
 -e git+https://github.com/KDD-OpenSource/agots#egg=agots
