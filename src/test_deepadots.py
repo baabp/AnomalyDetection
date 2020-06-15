@@ -15,6 +15,7 @@ from src.datasets.MNIST import MNIST
 from src.models.DeepADoTS.autoencoder import AutoEncoder
 from src.models.DeepADoTS.dagmm import DAGMM
 from src.models.DeepADoTS.rnn_ebm import RecurrentEBM
+from src.models.DeepADoTS.lstm_ad import LSTMAD
 
 
 
@@ -52,11 +53,19 @@ def exec_rnn(x_train, x_test):
     # error = model.predict(x_train_rs)
     # print(roc_auc_score(y_test, error))
 
+def exec_lstm_ad(x_train, x_test):
+    model = LSTMAD(gpu=0)
+    model.fit(x_train)
+    print('end_fit')
+    output = model.predict(x_test)
+    return output
+
 
 if __name__ == '__main__':
     print(torch.cuda.is_available())
     x_train, y_train, x_test, y_test = prepare_dataset(train_num=1000, test_num=100)
     # model, output = exec_autoencoder(x_train, x_test)
     # output=exec_dagmm(x_train, x_test)
-    output = exec_rnn(x_train, x_test)
+    # output = exec_rnn(x_train, x_test)
+    output = exec_lstm_ad(x_train, x_test)
     print(output)
